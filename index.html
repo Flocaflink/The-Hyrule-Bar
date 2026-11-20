@@ -16,25 +16,21 @@
       -webkit-tap-highlight-color: transparent;
     }
     .mm-text {
-      line-height: 1.8;
+      line-height: 1.85;
     }
     .game-case {
       aspect-ratio: 2 / 3;
     }
-    /* Smooth Bottom Sheet Animation */
     .drawer-enter {
       transform: translateY(100%);
-    }
-    .drawer-open {
-      transform: translateY(0);
     }
   </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-amber-500 selection:text-slate-950">
 
   <!-- Top Tavern Header -->
-  <header class="sticky top-0 z-20 bg-slate-950/90 backdrop-blur-md border-b border-amber-500/20 px-4 py-3.5">
-    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+  <header class="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-md border-b border-amber-500/20">
+    <div class="max-w-4xl mx-auto px-4 pt-3.5 pb-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-extrabold shadow-md shadow-amber-500/20">
@@ -50,16 +46,33 @@
         </span>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div id="headerSearchWrap" class="flex items-center gap-2">
         <input id="searchInput" type="search" placeholder="Search games..."
           class="w-full sm:w-64 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400" />
       </div>
     </div>
+
+    <!-- 3-Tab Main Navigation -->
+    <nav class="max-w-4xl mx-auto px-4 pb-2.5">
+      <div class="grid grid-cols-3 gap-1.5 bg-slate-900/90 p-1 rounded-2xl border border-slate-800">
+        <button id="navTab-games" onclick="switchMainTab('games')"
+          class="py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 bg-amber-500 text-slate-950 shadow">
+          <span>🎮</span><span>Games</span>
+        </button>
+        <button id="navTab-types" onclick="switchMainTab('types')"
+          class="py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200">
+          <span>💳</span><span>Game Types</span>
+        </button>
+        <button id="navTab-guide" onclick="switchMainTab('guide')"
+          class="py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200">
+          <span>📖</span><span>Install Guide</span>
+        </button>
+      </div>
+    </nav>
   </header>
 
-  <!-- Main Tall Game Case Shelf -->
-  <main class="max-w-4xl mx-auto px-4 pt-5">
-    <!-- Filter & Sort Bar -->
+  <!-- TAB 1: Main Game Case Shelf -->
+  <main id="view-games" class="max-w-4xl mx-auto px-4 pt-5">
     <div class="flex items-center justify-between gap-2 mb-4">
       <button id="availFilterBtn" onclick="toggleAvailableFilter()"
         class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border transition bg-slate-900 text-slate-300 border-slate-700 hover:border-emerald-500/50 shrink-0">
@@ -81,10 +94,66 @@
       </div>
     </div>
 
-    <div id="shelfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-      <!-- Game cases injected here -->
-    </div>
+    <div id="shelfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
   </main>
+
+  <!-- TAB 2: Game Types (Reference Layout: Title + 2 White Cards + Checkmark Notes Below) -->
+  <section id="view-types" class="hidden max-w-4xl mx-auto px-4 pt-6 space-y-6">
+    <h2 id="gameTypesHeading" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight mm-text">
+      NS ရဲ့ Virtual Game Card နဲ့ Online License ကဘာလဲ?
+    </h2>
+
+    <!-- 2 Crisp White Cards Side-by-Side -->
+    <div id="gameTypesCards" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5"></div>
+
+    <!-- Checkmark Notes List Below Cards -->
+    <div id="gameTypesNotes" class="space-y-3 pt-1"></div>
+
+    <div class="pt-2">
+      <button onclick="switchMainTab('guide')"
+        class="w-full sm:w-auto px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/15">
+        📖 Installation Guide ကြည့်ရန် နှိပ်ပါ →
+      </button>
+    </div>
+  </section>
+
+  <!-- TAB 3: Installation Guide (2 Big Cards Side-by-Side -> Vertical Steps) -->
+  <section id="view-guide" class="hidden max-w-4xl mx-auto px-4 pt-6 space-y-5">
+    <div class="space-y-1">
+      <h2 class="text-xl sm:text-2xl font-extrabold text-white">📖 Installation Guide</h2>
+      <p class="text-xs sm:text-sm text-slate-400 mm-text">မိမိငှားရမ်းထားသော အမျိုးအစားကို ရွေးချယ်ပြီး အဆင့်ဆင့် ချိတ်ဆက်ပါ</p>
+    </div>
+
+    <!-- 2 Big Side-by-Side Cards -->
+    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+      <button id="guideCard-VGC" onclick="selectGuideCategory('VGC')"
+        class="text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10">
+        <div class="flex items-center justify-between">
+          <span class="text-2xl sm:text-3xl">💳</span>
+          <span id="guideBadge-VGC" class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">Selected</span>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-white leading-snug">Virtual Game Card</h3>
+          <p class="text-[11px] sm:text-xs text-slate-300 mt-1 mm-text">VGC ချိတ်ဆက်နည်း အဆင့်ဆင့်</p>
+        </div>
+      </button>
+
+      <button id="guideCard-OL" onclick="selectGuideCategory('OL')"
+        class="text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700">
+        <div class="flex items-center justify-between">
+          <span class="text-2xl sm:text-3xl">🌐</span>
+          <span id="guideBadge-OL" class="hidden text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">Selected</span>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-white leading-snug">Online License</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-1 mm-text">Online License ချိတ်ဆက်နည်း အဆင့်ဆင့်</p>
+        </div>
+      </button>
+    </div>
+
+    <!-- Vertically Arranged Step-by-Step Pictures & Texts -->
+    <div id="guideStepsContainer" class="space-y-4 pt-1"></div>
+  </section>
 
   <!-- Floating Tavern Chat Button -->
   <button onclick="openChat()"
@@ -99,16 +168,10 @@
     class="fixed inset-0 z-30 bg-black/75 backdrop-blur-xs hidden flex items-end sm:items-center justify-center">
     <div id="gameDrawer" onclick="event.stopPropagation()"
       class="bg-slate-900 border-t sm:border border-slate-700/80 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[88vh] flex flex-col transition-transform duration-200 drawer-enter shadow-2xl">
-      
-      <!-- Drag Handle -->
       <div class="w-full flex justify-center pt-3 pb-1 sm:hidden">
         <div class="w-10 h-1.5 rounded-full bg-slate-700"></div>
       </div>
-
-      <div id="gameDrawerBody" class="overflow-y-auto px-5 pb-6 pt-2 space-y-4">
-        <!-- Populated dynamically -->
-      </div>
-
+      <div id="gameDrawerBody" class="overflow-y-auto px-5 pb-6 pt-2 space-y-4"></div>
       <div class="p-4 border-t border-slate-800 bg-slate-950/60 flex gap-2">
         <button id="askAboutGameBtn"
           class="flex-1 py-2.5 rounded-xl bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold text-sm hover:bg-amber-500/25">
@@ -127,7 +190,6 @@
     class="fixed inset-0 z-40 bg-black/75 backdrop-blur-xs hidden flex items-end sm:items-center justify-center">
     <div onclick="event.stopPropagation()"
       class="bg-slate-900 border-t sm:border border-slate-700/80 w-full max-w-lg rounded-t-3xl sm:rounded-3xl h-[82vh] flex flex-col shadow-2xl">
-      
       <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
         <div>
           <h2 class="font-bold text-base text-amber-400">🍺 The Hyrule Bar — Guestbook</h2>
@@ -137,13 +199,7 @@
           Close
         </button>
       </div>
-
-      <!-- Messages List -->
-      <div id="chatList" class="flex-1 overflow-y-auto p-4 space-y-3">
-        <!-- Messages injected here -->
-      </div>
-
-      <!-- Post Message Form -->
+      <div id="chatList" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
       <form id="chatForm" class="p-4 border-t border-slate-800 bg-slate-950/80 space-y-2.5">
         <div class="flex gap-2">
           <input id="chatName" type="text" placeholder="Your Nickname" required
@@ -166,55 +222,49 @@
   </div>
 
   <script>
-    // 1. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW:
     const API_URL = "https://script.google.com/macros/s/AKfycbzJr96keSYR_fwPiOoVcGgl_aGfw9Uy9oJhY2Qd78y0h1iY-zck0ef0VMuYCVJMGFoSuA/exec";
 
-    // Sample starter data (shown automatically until you paste your API_URL)
-    const SAMPLE_DATA = {
-      games: [
-        {
-          title: "The Legend of Zelda: Tears of the Kingdom",
-          cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.webp",
-          price: "155,000 MMK",
-          score: "10/10",
-          platform: "Switch",
-          genre: "Action Adventure",
-          players: "1 Player",
-          fileSize: "16.3 GB",
-          review: "Story ရော Gameplay ရော လုံးဝ Masterpiece ပါ။ Ultrahand နဲ့ ပစ္စည်းတွေ ဆက်ပြီး ကစားရတာ အရမ်းမိုက်သလို Sky Islands နဲ့ Depths ပါ ထပ်ပါလာတော့ နာရီ ၁၀၀ ကျော် အေးဆေးဆော့လို့ရတယ်။ Local market မှာ cartridge ပြန်ရောင်းရလည်း လွယ်လို့ ဝယ်ရတာ တန်ပါတယ်။"
-        },
-        {
-          title: "Super Mario Bros. Wonder",
-          cover: "https://images.igdb.com/igdb/image/upload/t_cover_big/co6nnl.webp",
-          price: "130,000 MMK",
-          score: "9.2",
-          platform: "Switch",
-          genre: "Platformer",
-          players: "1-4 Players",
-          fileSize: "4.5 GB",
-          review: "သူငယ်ချင်းတွေ မိသားစုတွေနဲ့ အတူတူဆော့ဖို့ အကောင်းဆုံး 2D Mario ဂိမ်းပါ။ Wonder Flower စားလိုက်တိုင်း stage တစ်ခုလုံး ပြောင်းလဲသွားတဲ့ idea က တော်တော် creative ဖြစ်တယ်။ Handheld mode နဲ့ ဆော့ရင် FPS လုံးဝငြိမ်ပါတယ်။"
-        }
-      ],
-      comments: [
-        {
-          timestamp: "Today",
-          name: "Link",
-          game: "General",
-          message: "Welcome to The Hyrule Bar! Grab a seat and check out the shelf."
-        }
-      ]
-    };
+    const DEFAULT_GAME_TYPES = [
+      {
+        section: "header",
+        title: "NS ရဲ့ Virtual Game Card နဲ့ Online License ကဘာလဲ?"
+      },
+      {
+        section: "card",
+        code: "VGC",
+        title: "Virtual Game Card",
+        content: "မိမိကိုယ်ပိုင် User နဲ့ ဆော့ကစားပေးရပါမယ်။ (ကျွန်တော်ပေးသော Account User နဲ့ ဆော့လို့မရပါ။)\n\nကိုယ်ပိုင် User Account နဲ့ Wi-Fi ဖွင့်ပြီးဆော့လို့ရသလို ပိတ်ပြီး Offline လည်း ဆော့လို့ရပါတယ်။ (Online Multiplayer ပါဆော့လို့ရ)"
+      },
+      {
+        section: "card",
+        code: "OL",
+        title: "Online License",
+        content: "ပေးထားသော Account User ထဲမှာဘဲ ဆော့လို့ရပါမယ်။ မိမိကိုယ်ပိုင် User နဲ့ ဆော့လို့မရပါ။\n\nဂိမ်းမဆော့ခင် Wi-Fi လေးခဏချိတ်ပေးရပါမယ်။ ဂိမ်းထဲဝင်လို့ Nintendo logo လေးပေါ်ပြီဆိုတာနဲ့ ချက်ချင်း Airplane Mode On ပေးရပါမယ်။"
+      },
+      {
+        section: "note",
+        content: "Online License မှာ Airplane Mode On ရတယ်ဆိုတာ အခြားတစ်ယောက် User တိုက်ပြီး ဂိမ်းထဲကနေ ထွက်သွားမှာစိုးလို့ပါ။"
+      },
+      {
+        section: "note",
+        content: "Nintendo ကနေ သတ်မှတ်ထားတဲ့ Family / Virtual Game Card စနစ်အတိုင်း ငှားရမ်းပေးတာဖြစ်လို့ ယုံကြည်စိတ်ချစွာ ငှားရမ်းနိုင်ပါတယ်။"
+      }
+    ];
 
-    let state = { games: [], comments: [], posts: [] };
+    let state = { games: [], comments: [], posts: [], gameTypes: DEFAULT_GAME_TYPES, guides: [] };
+    let activeGuideCat = 'VGC';
 
     async function init() {
-      // Load cached data first for instant mobile rendering
       const cached = localStorage.getItem('hyrule_bar_cache');
       if (cached) {
-        state = JSON.parse(cached);
+        const parsed = JSON.parse(cached);
+        state = {
+          ...state,
+          ...parsed,
+          gameTypes: (parsed.gameTypes && parsed.gameTypes.length) ? parsed.gameTypes : DEFAULT_GAME_TYPES
+        };
         renderAll();
       } else {
-        state = SAMPLE_DATA;
         renderAll();
       }
 
@@ -224,40 +274,196 @@
         const res = await fetch(API_URL);
         const fresh = await res.json();
         if (fresh && Array.isArray(fresh.games)) {
-          state = fresh;
-          localStorage.setItem('hyrule_bar_cache', JSON.stringify(fresh));
+          state = {
+            ...state,
+            ...fresh,
+            gameTypes: (fresh.gameTypes && fresh.gameTypes.length) ? fresh.gameTypes : DEFAULT_GAME_TYPES
+          };
+          localStorage.setItem('hyrule_bar_cache', JSON.stringify(state));
           renderAll();
         }
       } catch (err) {
-        console.warn("Using cached/sample data:", err);
+        console.warn("Using cached data:", err);
       }
     }
 
     function renderAll() {
-      renderShelf(state.games);
+      applyFilters();
+      renderGameTypes();
+      renderGuideSteps();
       renderComments();
       populateGameDropdown();
     }
 
-    function getAvailabilityBadge(status) {
-      if (!status) return '';
-      const inHand = /ငှားနိုင်သည်/i.test(status);
-      const style = inHand
-        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-        : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
-      return `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${style}">${escapeHtml(status)}</span>`;
+    function switchMainTab(tabName) {
+      ['games', 'types', 'guide'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`navTab-${t}`);
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          btn.className = "py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 bg-amber-500 text-slate-950 shadow";
+        } else {
+          view.classList.add('hidden');
+          btn.className = "py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200";
+        }
+      });
+
+      const searchWrap = document.getElementById('headerSearchWrap');
+      if (tabName === 'games') {
+        searchWrap.classList.remove('hidden');
+      } else {
+        searchWrap.classList.add('hidden');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // TAB 2: Render Reference-Style White Comparison Cards + Checkmark Notes
+    function renderGameTypes() {
+      const rows = (state.gameTypes && state.gameTypes.length) ? state.gameTypes : DEFAULT_GAME_TYPES;
+
+      const headerRow = rows.find(r => r.section === 'header');
+      if (headerRow && headerRow.title) {
+        document.getElementById('gameTypesHeading').textContent = headerRow.title;
+      }
+
+      const cards = rows.filter(r => r.section === 'card');
+      document.getElementById('gameTypesCards').innerHTML = cards.map(c => `
+        <div class="bg-white text-slate-900 rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-200 space-y-2.5">
+          <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight">
+            ${escapeHtml(c.code)}
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+            ${escapeHtml(c.title)}
+          </h3>
+          <div class="text-xs sm:text-sm text-slate-700 mm-text whitespace-pre-line pt-1">
+            ${escapeHtml(c.content)}
+          </div>
+        </div>
+      `).join('');
+
+      const notes = rows.filter(r => r.section === 'note');
+      document.getElementById('gameTypesNotes').innerHTML = notes.map(n => `
+        <div class="flex items-start gap-2.5">
+          <span class="text-rose-400 font-extrabold text-sm mt-0.5 shrink-0">✓</span>
+          <p class="text-xs sm:text-sm text-slate-200 mm-text whitespace-pre-line">${escapeHtml(n.content)}</p>
+        </div>
+      `).join('');
+    }
+
+    // TAB 3: Installation Guide
+    function selectGuideCategory(cat) {
+      activeGuideCat = cat;
+      const isVGC = cat === 'VGC';
+
+      document.getElementById('guideCard-VGC').className = isVGC
+        ? "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10"
+        : "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700";
+
+      document.getElementById('guideCard-OL').className = !isVGC
+        ? "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10"
+        : "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700";
+
+      document.getElementById('guideBadge-VGC').classList.toggle('hidden', !isVGC);
+      document.getElementById('guideBadge-OL').classList.toggle('hidden', isVGC);
+
+      renderGuideSteps();
+    }
+
+    function renderGuideSteps() {
+      const container = document.getElementById('guideStepsContainer');
+      const steps = (state.guides || []).filter(item => {
+        const t = String(item.type || '').trim().toUpperCase();
+        if (activeGuideCat === 'VGC') return t === 'VGC' || t === 'VIRTUAL GAME CARD';
+        return t === 'OL' || t === 'ONLINE' || t === 'ONLINE LICENSE';
+      });
+
+      if (!steps.length) {
+        container.innerHTML = `
+          <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-8 text-center space-y-1.5">
+            <p class="text-sm font-bold text-slate-300">လမ်းညွှန် အဆင့်များ မထည့်ရသေးပါ</p>
+            <p class="text-xs text-slate-500">Google Sheet ၏ 'Guides' tab တွင် type (${activeGuideCat}) ဖြင့် ထည့်သွင်းနိုင်ပါသည်</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = steps.map((s, idx) => {
+        const stepLabel = s.step
+          ? (/^step/i.test(s.step) ? s.step : `Step ${s.step}`)
+          : `Step ${idx + 1}`;
+        const safeImgSrc = s.image ? encodeURI(s.image) : '';
+
+        return `
+          <article class="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-lg">
+            <div class="p-4 sm:p-5 space-y-3">
+              <div class="flex items-center gap-2.5">
+                <span class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full shrink-0">
+                  ${escapeHtml(stepLabel)}
+                </span>
+                <h3 class="font-extrabold text-base sm:text-lg text-white leading-snug">${escapeHtml(s.title)}</h3>
+              </div>
+
+              ${safeImgSrc ? `
+                <a href="${safeImgSrc}" target="_blank" rel="noopener" class="block group relative rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950">
+                  <img src="${safeImgSrc}" alt="${escapeHtml(stepLabel)}" loading="lazy"
+                    class="w-full h-auto object-contain max-h-[420px] mx-auto group-hover:scale-[1.01] transition" />
+                  <span class="absolute bottom-2 right-2 bg-slate-950/80 text-slate-300 text-[10px] px-2 py-0.5 rounded-md border border-slate-700">
+                    🔍 Tap to zoom
+                  </span>
+                </a>` : ''}
+
+              ${s.content ? `
+                <p class="text-sm text-slate-200 mm-text whitespace-pre-line pt-1">${escapeHtml(s.content)}</p>
+              ` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function getRentalBadges(g, isDrawer = false) {
+      let html = '';
+
+      if (g.availability !== undefined && g.availability !== '') {
+        const vgcFree = /^(1|true|yes|ငှားနိုင်သည်)$/i.test(String(g.availability).trim());
+        const vgcLabel = isDrawer
+          ? (vgcFree ? '💳 Virtual Card: ငှားနိုင်သည်' : '💳 Virtual Card: ငှားထားသည်')
+          : (vgcFree ? '💳 VGC: ငှားနိုင်သည်' : '💳 VGC: ငှားထားသည်');
+        const vgcStyle = vgcFree
+          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+          : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+        html += `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${vgcStyle}">${vgcLabel}</span>`;
+      }
+
+      if (g.onlineSlots !== undefined && g.onlineSlots !== '') {
+        const slots = parseInt(g.onlineSlots, 10);
+        if (!isNaN(slots)) {
+          const onlineFree = slots > 0;
+          const onlineLabel = isDrawer
+            ? (onlineFree ? `🌐 Online License: ${slots}/2 ငှားနိုင်သည်` : '🌐 Online License: ပြည့်ပြီ (0/2)')
+            : (onlineFree ? `🌐 Online: ${slots}/2 ရမည်` : '🌐 Online: ပြည့်ပြီ');
+          const onlineStyle = onlineFree
+            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+            : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+          html += `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${onlineStyle}">${onlineLabel}</span>`;
+        }
+      }
+
+      return html;
     }
 
     function renderShelf(list) {
       const grid = document.getElementById('shelfGrid');
       document.getElementById('gameCount').textContent = `${list.length} Games`;
+      const desktopCount = document.getElementById('desktopGameCount');
+      if (desktopCount) desktopCount.textContent = `${list.length} Games`;
 
       grid.innerHTML = list.map((g) => {
         const realIdx = state.games.indexOf(g);
         return `
           <div onclick="openGameModal(${realIdx})"
             class="group bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-lg cursor-pointer transition active:scale-[0.98] flex flex-col">
-            <div class="relative game-case w-full bg-slate-800 overflow-hidden">
+            <div class="relative game-case w-full bg-slate-800 overflow-hidden shrink-0">
               <img src="${g.cover}" alt="${g.title}" loading="lazy"
                 class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
               ${g.score ? `
@@ -267,10 +473,12 @@
             </div>
             <div class="p-3 flex-1 flex flex-col justify-between">
               <h2 class="font-bold text-xs sm:text-sm text-slate-100 line-clamp-2 leading-snug">${g.title}</h2>
-              <div class="flex items-center justify-between gap-1.5 mt-2">
-  <p class="text-xs font-bold text-emerald-400 truncate">${g.price || '—'}</p>
-  ${getAvailabilityBadge(g.availability)}
-</div>
+              <div>
+                <p class="text-xs font-bold text-emerald-400 mt-1.5">${g.price || '—'}</p>
+                <div class="flex flex-wrap gap-1 mt-1.5">
+                  ${getRentalBadges(g, false)}
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -285,7 +493,6 @@
         p => p.game.toLowerCase() === g.title.trim().toLowerCase()
       );
 
-      // Build collapsible cards from Posts tab (falls back to g.review if no Posts exist yet)
       const postsHtml = gamePosts.length
         ? gamePosts.map((p, i) => `
             <details ${i === 0 ? 'open' : ''} class="group bg-slate-800/50 border border-slate-700/70 rounded-2xl overflow-hidden">
@@ -318,7 +525,7 @@
               ${g.platform ? `<span class="text-[11px] font-semibold bg-red-500/15 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-md">${g.platform}</span>` : ''}
               ${g.releaseYear ? `<span class="text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-md">${g.releaseYear}</span>` : ''}
               ${g.score ? `<span class="text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">★ ${g.score}</span>` : ''}
-              ${getAvailabilityBadge(g.availability)}
+              ${getRentalBadges(g, true)}
             </div>
             <h2 class="text-base sm:text-lg font-extrabold text-white leading-snug">${g.title}</h2>
             <p class="text-sm font-bold text-emerald-400">${g.price || ''}</p>
@@ -365,7 +572,6 @@
       if (e.target.id === 'gameModal') hideGameModal();
     }
 
-    // Chat / Guestbook Functions
     function populateGameDropdown() {
       const select = document.getElementById('chatGameTag');
       select.innerHTML = `<option value="General">General Chat</option>` +
@@ -412,14 +618,15 @@
 
     document.getElementById('chatForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const COOLDOWN_MS = 30 * 1000; // 30 seconds
-const lastPost = Number(localStorage.getItem('hyrule_last_post') || 0);
-const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - lastPost)) / 1000);
-if (remaining > 0) {
-  alert(`Please wait ${remaining}s before sending another message.`);
-  return;
-}
-localStorage.setItem('hyrule_last_post', Date.now().toString());
+      const COOLDOWN_MS = 30 * 1000;
+      const lastPost = Number(localStorage.getItem('hyrule_last_post') || 0);
+      const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - lastPost)) / 1000);
+      if (remaining > 0) {
+        alert(`Please wait ${remaining}s before sending another message.`);
+        return;
+      }
+      localStorage.setItem('hyrule_last_post', Date.now().toString());
+
       const name = document.getElementById('chatName').value.trim();
       const game = document.getElementById('chatGameTag').value;
       const message = document.getElementById('chatMessage').value.trim();
@@ -429,7 +636,6 @@ localStorage.setItem('hyrule_last_post', Date.now().toString());
       btn.disabled = true;
       btn.textContent = '...';
 
-      // Optimistically add to UI immediately
       state.comments.unshift({
         timestamp: 'Just now',
         name,
@@ -443,7 +649,7 @@ localStorage.setItem('hyrule_last_post', Date.now().toString());
         try {
           await fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ name, game, message })
           });
         } catch (err) {
@@ -474,7 +680,6 @@ localStorage.setItem('hyrule_last_post', Date.now().toString());
 
     function parseNumber(val) {
       if (val === undefined || val === null || val === '') return null;
-      // Takes the first number before a slash (e.g., "10/10" -> 10) and strips commas/text
       const clean = String(val).split('/')[0].replace(/[^0-9.]/g, '');
       const num = parseFloat(clean);
       return isNaN(num) ? null : num;
@@ -487,27 +692,19 @@ localStorage.setItem('hyrule_last_post', Date.now().toString());
       const filtered = state.games.filter(g => {
         const matchesSearch = g.title.toLowerCase().includes(q) ||
           (g.genre && g.genre.toLowerCase().includes(q));
-        const matchesAvail = !showAvailableOnly || /ငှားနိုင်သည်/i.test(g.availability || '');
+        const vgcFree = /^(1|true|yes|ငှားနိုင်သည်)$/i.test(String(g.availability || '').trim());
+        const onlineFree = (parseInt(g.onlineSlots, 10) || 0) > 0;
+        const matchesAvail = !showAvailableOnly || vgcFree || onlineFree;
         return matchesSearch && matchesAvail;
       });
 
       if (sortBy !== 'default') {
         filtered.sort((a, b) => {
-          if (sortBy === 'title-asc') {
-            return a.title.localeCompare(b.title);
-          }
-          if (sortBy === 'score-desc') {
-            return (parseNumber(b.score) ?? -1) - (parseNumber(a.score) ?? -1);
-          }
-          if (sortBy === 'year-desc') {
-            return (parseNumber(b.releaseYear) ?? 0) - (parseNumber(a.releaseYear) ?? 0);
-          }
-          if (sortBy === 'price-asc') {
-            return (parseNumber(a.price) ?? Infinity) - (parseNumber(b.price) ?? Infinity);
-          }
-          if (sortBy === 'price-desc') {
-            return (parseNumber(b.price) ?? -1) - (parseNumber(a.price) ?? -1);
-          }
+          if (sortBy === 'title-asc') return a.title.localeCompare(b.title);
+          if (sortBy === 'score-desc') return (parseNumber(b.score) ?? -1) - (parseNumber(a.score) ?? -1);
+          if (sortBy === 'year-desc') return (parseNumber(b.releaseYear) ?? 0) - (parseNumber(a.releaseYear) ?? 0);
+          if (sortBy === 'price-asc') return (parseNumber(a.price) ?? Infinity) - (parseNumber(b.price) ?? Infinity);
+          if (sortBy === 'price-desc') return (parseNumber(b.price) ?? -1) - (parseNumber(a.price) ?? -1);
           return 0;
         });
       }
