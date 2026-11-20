@@ -59,6 +59,28 @@
 
   <!-- Main Tall Game Case Shelf -->
   <main class="max-w-4xl mx-auto px-4 pt-5">
+    <!-- Filter & Sort Bar -->
+    <div class="flex items-center justify-between gap-2 mb-4">
+      <button id="availFilterBtn" onclick="toggleAvailableFilter()"
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border transition bg-slate-900 text-slate-300 border-slate-700 hover:border-emerald-500/50 shrink-0">
+        <span id="availDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span>ငှားလို့ရတာပဲပြပါ။</span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span id="desktopGameCount" class="hidden sm:inline text-xs text-slate-400 font-semibold"></span>
+        <select id="sortSelect" onchange="applyFilters()"
+          class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-slate-300 border border-slate-700 focus:outline-none focus:border-amber-400">
+          <option value="default">Sort: Default</option>
+          <option value="score-desc">Score: High → Low</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="year-desc">Year: Newest First</option>
+          <option value="title-asc">Title: A → Z</option>
+        </select>
+      </div>
+    </div>
+
     <div id="shelfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
       <!-- Game cases injected here -->
     </div>
@@ -183,7 +205,7 @@
       ]
     };
 
-    let state = { games: [], comments: [] };
+    let state = { games: [], comments: [], posts: [] };
 
     async function init() {
       // Load cached data first for instant mobile rendering
@@ -217,6 +239,15 @@
       populateGameDropdown();
     }
 
+    function getAvailabilityBadge(status) {
+      if (!status) return '';
+      const inHand = /ငှားနိုင်သည်/i.test(status);
+      const style = inHand
+        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+        : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+      return `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${style}">${escapeHtml(status)}</span>`;
+    }
+
     function renderShelf(list) {
       const grid = document.getElementById('shelfGrid');
       document.getElementById('gameCount').textContent = `${list.length} Games`;
@@ -236,7 +267,10 @@
             </div>
             <div class="p-3 flex-1 flex flex-col justify-between">
               <h2 class="font-bold text-xs sm:text-sm text-slate-100 line-clamp-2 leading-snug">${g.title}</h2>
-              <p class="text-xs font-bold text-emerald-400 mt-2">${g.price || '—'}</p>
+              <div class="flex items-center justify-between gap-1.5 mt-2">
+  <p class="text-xs font-bold text-emerald-400 truncate">${g.price || '—'}</p>
+  ${getAvailabilityBadge(g.availability)}
+</div>
             </div>
           </div>
         `;
@@ -247,13 +281,44 @@
       const g = state.games[idx];
       if (!g) return;
 
+      const gamePosts = (state.posts || []).filter(
+        p => p.game.toLowerCase() === g.title.trim().toLowerCase()
+      );
+
+      // Build collapsible cards from Posts tab (falls back to g.review if no Posts exist yet)
+      const postsHtml = gamePosts.length
+        ? gamePosts.map((p, i) => `
+            <details ${i === 0 ? 'open' : ''} class="group bg-slate-800/50 border border-slate-700/70 rounded-2xl overflow-hidden">
+              <summary class="flex items-center justify-between gap-2 px-4 py-3 cursor-pointer list-none select-none hover:bg-slate-800/80">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 shrink-0">
+                    ${escapeHtml(p.type)}
+                  </span>
+                  <span class="text-sm font-bold text-slate-100 truncate">${escapeHtml(p.title)}</span>
+                </div>
+                <span class="text-slate-400 text-xs transition-transform duration-200 group-open:rotate-180 shrink-0">▼</span>
+              </summary>
+              <div class="px-4 pb-4 pt-2 border-t border-slate-700/50">
+                <p class="text-sm text-slate-200 mm-text whitespace-pre-line">${escapeHtml(p.content)}</p>
+              </div>
+            </details>
+          `).join('')
+        : `
+            <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-4">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Hyrule Bar Review</h3>
+              <p class="text-sm text-slate-200 mm-text whitespace-pre-line">${escapeHtml(g.review || 'No review written yet.')}</p>
+            </div>
+          `;
+
       document.getElementById('gameDrawerBody').innerHTML = `
         <div class="flex gap-4 items-start">
           <img src="${g.cover}" alt="${g.title}" class="w-24 sm:w-28 game-case object-cover rounded-xl border border-slate-700 shadow-md shrink-0" />
           <div class="space-y-1.5">
-            <div class="flex flex-wrap gap-1.5">
+            <div class="flex flex-wrap items-center gap-1.5">
               ${g.platform ? `<span class="text-[11px] font-semibold bg-red-500/15 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-md">${g.platform}</span>` : ''}
+              ${g.releaseYear ? `<span class="text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-md">${g.releaseYear}</span>` : ''}
               ${g.score ? `<span class="text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">★ ${g.score}</span>` : ''}
+              ${getAvailabilityBadge(g.availability)}
             </div>
             <h2 class="text-base sm:text-lg font-extrabold text-white leading-snug">${g.title}</h2>
             <p class="text-sm font-bold text-emerald-400">${g.price || ''}</p>
@@ -275,10 +340,7 @@
           </div>
         </div>
 
-        <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-4">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Tavern Review</h3>
-          <p class="text-sm text-slate-200 mm-text whitespace-pre-line">${g.review || 'No review written yet.'}</p>
-        </div>
+        ${postsHtml}
       `;
 
       document.getElementById('askAboutGameBtn').onclick = () => {
@@ -350,6 +412,14 @@
 
     document.getElementById('chatForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const COOLDOWN_MS = 30 * 1000; // 30 seconds
+const lastPost = Number(localStorage.getItem('hyrule_last_post') || 0);
+const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - lastPost)) / 1000);
+if (remaining > 0) {
+  alert(`Please wait ${remaining}s before sending another message.`);
+  return;
+}
+localStorage.setItem('hyrule_last_post', Date.now().toString());
       const name = document.getElementById('chatName').value.trim();
       const game = document.getElementById('chatGameTag').value;
       const message = document.getElementById('chatMessage').value.trim();
@@ -385,13 +455,67 @@
       btn.textContent = 'Send';
     });
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const q = e.target.value.toLowerCase();
-      renderShelf(state.games.filter(g =>
-        g.title.toLowerCase().includes(q) ||
-        (g.genre && g.genre.toLowerCase().includes(q))
-      ));
-    });
+    let showAvailableOnly = false;
+
+    function toggleAvailableFilter() {
+      showAvailableOnly = !showAvailableOnly;
+      const btn = document.getElementById('availFilterBtn');
+      const dot = document.getElementById('availDot');
+
+      if (showAvailableOnly) {
+        btn.className = "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border transition bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-sm shadow-emerald-500/10";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400";
+      } else {
+        btn.className = "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold border transition bg-slate-900 text-slate-300 border-slate-700 hover:border-emerald-500/50";
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+      }
+      applyFilters();
+    }
+
+    function parseNumber(val) {
+      if (val === undefined || val === null || val === '') return null;
+      // Takes the first number before a slash (e.g., "10/10" -> 10) and strips commas/text
+      const clean = String(val).split('/')[0].replace(/[^0-9.]/g, '');
+      const num = parseFloat(clean);
+      return isNaN(num) ? null : num;
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const sortBy = document.getElementById('sortSelect').value;
+
+      const filtered = state.games.filter(g => {
+        const matchesSearch = g.title.toLowerCase().includes(q) ||
+          (g.genre && g.genre.toLowerCase().includes(q));
+        const matchesAvail = !showAvailableOnly || /ငှားနိုင်သည်/i.test(g.availability || '');
+        return matchesSearch && matchesAvail;
+      });
+
+      if (sortBy !== 'default') {
+        filtered.sort((a, b) => {
+          if (sortBy === 'title-asc') {
+            return a.title.localeCompare(b.title);
+          }
+          if (sortBy === 'score-desc') {
+            return (parseNumber(b.score) ?? -1) - (parseNumber(a.score) ?? -1);
+          }
+          if (sortBy === 'year-desc') {
+            return (parseNumber(b.releaseYear) ?? 0) - (parseNumber(a.releaseYear) ?? 0);
+          }
+          if (sortBy === 'price-asc') {
+            return (parseNumber(a.price) ?? Infinity) - (parseNumber(b.price) ?? Infinity);
+          }
+          if (sortBy === 'price-desc') {
+            return (parseNumber(b.price) ?? -1) - (parseNumber(a.price) ?? -1);
+          }
+          return 0;
+        });
+      }
+
+      renderShelf(filtered);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
 
     function escapeHtml(str) {
       return String(str)
