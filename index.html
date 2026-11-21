@@ -61,7 +61,7 @@
         </button>
         <button id="navTab-types" onclick="switchMainTab('types')"
           class="py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200">
-          <span>💳</span><span>Game Types</span>
+          <span>💳</span><span>How It Works</span>
         </button>
         <button id="navTab-guide" onclick="switchMainTab('guide')"
           class="py-2 px-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200">
@@ -97,16 +97,16 @@
     <div id="shelfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
   </main>
 
-  <!-- TAB 2: Game Types (Reference Layout: Title + 2 White Cards + Checkmark Notes Below) -->
+  <!-- TAB 2: How Virtual Game Cards Work (Controlled by 'GameTypes' tab in Sheet) -->
   <section id="view-types" class="hidden max-w-4xl mx-auto px-4 pt-6 space-y-6">
     <h2 id="gameTypesHeading" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight mm-text">
-      NS ရဲ့ Virtual Game Card နဲ့ Online License ကဘာလဲ?
+      NS ရဲ့ Virtual Game Card (VGC) ဆိုတာဘာလဲ?
     </h2>
 
-    <!-- 2 Crisp White Cards Side-by-Side -->
-    <div id="gameTypesCards" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5"></div>
+    <!-- White Info Card(s) -->
+    <div id="gameTypesCards" class="grid grid-cols-1 gap-4 sm:gap-5"></div>
 
-    <!-- Checkmark Notes List Below Cards -->
+    <!-- Checkmark Notes List Below -->
     <div id="gameTypesNotes" class="space-y-3 pt-1"></div>
 
     <div class="pt-2">
@@ -117,42 +117,15 @@
     </div>
   </section>
 
-  <!-- TAB 3: Installation Guide (2 Big Cards Side-by-Side -> Vertical Steps) -->
+  <!-- TAB 3: Virtual Game Card Installation Guide (Direct Vertical Steps) -->
   <section id="view-guide" class="hidden max-w-4xl mx-auto px-4 pt-6 space-y-5">
     <div class="space-y-1">
-      <h2 class="text-xl sm:text-2xl font-extrabold text-white">📖 Installation Guide</h2>
-      <p class="text-xs sm:text-sm text-slate-400 mm-text">မိမိငှားရမ်းထားသော အမျိုးအစားကို ရွေးချယ်ပြီး အဆင့်ဆင့် ချိတ်ဆက်ပါ</p>
-    </div>
-
-    <!-- 2 Big Side-by-Side Cards -->
-    <div class="grid grid-cols-2 gap-3 sm:gap-4">
-      <button id="guideCard-VGC" onclick="selectGuideCategory('VGC')"
-        class="text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10">
-        <div class="flex items-center justify-between">
-          <span class="text-2xl sm:text-3xl">💳</span>
-          <span id="guideBadge-VGC" class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">Selected</span>
-        </div>
-        <div>
-          <h3 class="font-extrabold text-sm sm:text-base text-white leading-snug">Virtual Game Card</h3>
-          <p class="text-[11px] sm:text-xs text-slate-300 mt-1 mm-text">VGC ချိတ်ဆက်နည်း အဆင့်ဆင့်</p>
-        </div>
-      </button>
-
-      <button id="guideCard-OL" onclick="selectGuideCategory('OL')"
-        class="text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700">
-        <div class="flex items-center justify-between">
-          <span class="text-2xl sm:text-3xl">🌐</span>
-          <span id="guideBadge-OL" class="hidden text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">Selected</span>
-        </div>
-        <div>
-          <h3 class="font-extrabold text-sm sm:text-base text-white leading-snug">Online License</h3>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-1 mm-text">Online License ချိတ်ဆက်နည်း အဆင့်ဆင့်</p>
-        </div>
-      </button>
+      <h2 class="text-xl sm:text-2xl font-extrabold text-white">📖 Virtual Game Card ချိတ်ဆက်နည်း</h2>
+      <p class="text-xs sm:text-sm text-slate-400 mm-text">အောက်ပါ အဆင့်များအတိုင်း တစ်ဆင့်ချင်းစီ ချိတ်ဆက်အသုံးပြုနိုင်ပါသည်</p>
     </div>
 
     <!-- Vertically Arranged Step-by-Step Pictures & Texts -->
-    <div id="guideStepsContainer" class="space-y-4 pt-1"></div>
+    <div id="guideStepsContainer" class="space-y-4"></div>
   </section>
 
   <!-- Floating Tavern Chat Button -->
@@ -227,32 +200,25 @@
     const DEFAULT_GAME_TYPES = [
       {
         section: "header",
-        title: "NS ရဲ့ Virtual Game Card နဲ့ Online License ကဘာလဲ?"
+        title: "NS ရဲ့ Virtual Game Card (VGC) ဆိုတာဘာလဲ?"
       },
       {
         section: "card",
         code: "VGC",
         title: "Virtual Game Card",
-        content: "မိမိကိုယ်ပိုင် User နဲ့ ဆော့ကစားပေးရပါမယ်။ (ကျွန်တော်ပေးသော Account User နဲ့ ဆော့လို့မရပါ။)\n\nကိုယ်ပိုင် User Account နဲ့ Wi-Fi ဖွင့်ပြီးဆော့လို့ရသလို ပိတ်ပြီး Offline လည်း ဆော့လို့ရပါတယ်။ (Online Multiplayer ပါဆော့လို့ရ)"
-      },
-      {
-        section: "card",
-        code: "OL",
-        title: "Online License",
-        content: "ပေးထားသော Account User ထဲမှာဘဲ ဆော့လို့ရပါမယ်။ မိမိကိုယ်ပိုင် User နဲ့ ဆော့လို့မရပါ။\n\nဂိမ်းမဆော့ခင် Wi-Fi လေးခဏချိတ်ပေးရပါမယ်။ ဂိမ်းထဲဝင်လို့ Nintendo logo လေးပေါ်ပြီဆိုတာနဲ့ ချက်ချင်း Airplane Mode On ပေးရပါမယ်။"
+        content: "Cartridge အစစ်တစ်ချပ်လို မိမိစက်ထဲ တိုက်ရိုက် Load လုပ်ပြီး ကိုယ်ပိုင် User နဲ့ ဆော့ကစားပေးရပါမယ်။ (ကျွန်တော်ပေးသော Account User နဲ့ ဆော့လို့မရပါ။)\n\nကိုယ်ပိုင် User Account နဲ့ Wi-Fi ဖွင့်ပြီးဆော့လို့ရသလို ပိတ်ပြီး Offline လည်း အချိန်မရွေး ဆော့လို့ရပါတယ်။ (Online Multiplayer ပါဆော့လို့ရ)"
       },
       {
         section: "note",
-        content: "Online License မှာ Airplane Mode On ရတယ်ဆိုတာ အခြားတစ်ယောက် User တိုက်ပြီး ဂိမ်းထဲကနေ ထွက်သွားမှာစိုးလို့ပါ။"
+        content: "တစ်ကြိမ်ငှားရမ်းလျှင် ၁၄ ရက် (2 Weeks) အသုံးပြုနိုင်ပြီး မိမိကိုယ်ပိုင် Save Data ဖြင့် စိတ်ကြိုက်ဆော့ကစားနိုင်ပါသည်။"
       },
       {
         section: "note",
-        content: "Nintendo ကနေ သတ်မှတ်ထားတဲ့ Family / Virtual Game Card စနစ်အတိုင်း ငှားရမ်းပေးတာဖြစ်လို့ ယုံကြည်စိတ်ချစွာ ငှားရမ်းနိုင်ပါတယ်။"
+        content: "Nintendo ကနေ တရားဝင် သတ်မှတ်ထားတဲ့ Virtual Game Card စနစ်အတိုင်း ငှားရမ်းပေးတာဖြစ်လို့ Ban ခံရမှာ စိတ်ပူစရာမလိုဘဲ ယုံကြည်စိတ်ချစွာ ငှားရမ်းနိုင်ပါတယ်။"
       }
     ];
 
     let state = { games: [], comments: [], posts: [], gameTypes: DEFAULT_GAME_TYPES, guides: [] };
-    let activeGuideCat = 'VGC';
 
     async function init() {
       const cached = localStorage.getItem('hyrule_bar_cache');
@@ -317,7 +283,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // TAB 2: Render Reference-Style White Comparison Cards + Checkmark Notes
+    // TAB 2: How Virtual Game Cards Work (Filters out any OL rows if still in Sheet)
     function renderGameTypes() {
       const rows = (state.gameTypes && state.gameTypes.length) ? state.gameTypes : DEFAULT_GAME_TYPES;
 
@@ -326,8 +292,13 @@
         document.getElementById('gameTypesHeading').textContent = headerRow.title;
       }
 
-      const cards = rows.filter(r => r.section === 'card');
-      document.getElementById('gameTypesCards').innerHTML = cards.map(c => `
+      const cards = rows.filter(r => r.section === 'card' && String(r.code || '').toUpperCase() !== 'OL');
+      const gridEl = document.getElementById('gameTypesCards');
+      gridEl.className = cards.length > 1
+        ? "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5"
+        : "grid grid-cols-1 gap-4 sm:gap-5";
+
+      gridEl.innerHTML = cards.map(c => `
         <div class="bg-white text-slate-900 rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-200 space-y-2.5">
           <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight">
             ${escapeHtml(c.code)}
@@ -350,38 +321,19 @@
       `).join('');
     }
 
-    // TAB 3: Installation Guide
-    function selectGuideCategory(cat) {
-      activeGuideCat = cat;
-      const isVGC = cat === 'VGC';
-
-      document.getElementById('guideCard-VGC').className = isVGC
-        ? "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10"
-        : "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700";
-
-      document.getElementById('guideCard-OL').className = !isVGC
-        ? "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-amber-500/15 border-amber-400 shadow-lg shadow-amber-500/10"
-        : "text-left p-4 sm:p-5 rounded-2xl border-2 transition flex flex-col justify-between gap-2 bg-slate-900/90 border-slate-800 hover:border-slate-700";
-
-      document.getElementById('guideBadge-VGC').classList.toggle('hidden', !isVGC);
-      document.getElementById('guideBadge-OL').classList.toggle('hidden', isVGC);
-
-      renderGuideSteps();
-    }
-
+    // TAB 3: Virtual Game Card Installation Guide Only
     function renderGuideSteps() {
       const container = document.getElementById('guideStepsContainer');
       const steps = (state.guides || []).filter(item => {
         const t = String(item.type || '').trim().toUpperCase();
-        if (activeGuideCat === 'VGC') return t === 'VGC' || t === 'VIRTUAL GAME CARD';
-        return t === 'OL' || t === 'ONLINE' || t === 'ONLINE LICENSE';
+        return !t || t === 'VGC' || t === 'VIRTUAL GAME CARD';
       });
 
       if (!steps.length) {
         container.innerHTML = `
           <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-8 text-center space-y-1.5">
             <p class="text-sm font-bold text-slate-300">လမ်းညွှန် အဆင့်များ မထည့်ရသေးပါ</p>
-            <p class="text-xs text-slate-500">Google Sheet ၏ 'Guides' tab တွင် type (${activeGuideCat}) ဖြင့် ထည့်သွင်းနိုင်ပါသည်</p>
+            <p class="text-xs text-slate-500">Google Sheet ၏ 'Guides' tab တွင် VGC အဆင့်များ ထည့်သွင်းနိုင်ပါသည်</p>
           </div>
         `;
         return;
@@ -421,35 +373,19 @@
       }).join('');
     }
 
-    function getRentalBadges(g, isDrawer = false) {
-      let html = '';
+    // Single Virtual Game Card Availability Badge
+    function isVgcAvailable(status) {
+      return /^(1|true|yes|ငှားနိုင်သည်)$/i.test(String(status || '').trim());
+    }
 
-      if (g.availability !== undefined && g.availability !== '') {
-        const vgcFree = /^(1|true|yes|ငှားနိုင်သည်)$/i.test(String(g.availability).trim());
-        const vgcLabel = isDrawer
-          ? (vgcFree ? '💳 Virtual Card: ငှားနိုင်သည်' : '💳 Virtual Card: ငှားထားသည်')
-          : (vgcFree ? '💳 VGC: ငှားနိုင်သည်' : '💳 VGC: ငှားထားသည်');
-        const vgcStyle = vgcFree
-          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-          : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
-        html += `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${vgcStyle}">${vgcLabel}</span>`;
-      }
-
-      if (g.onlineSlots !== undefined && g.onlineSlots !== '') {
-        const slots = parseInt(g.onlineSlots, 10);
-        if (!isNaN(slots)) {
-          const onlineFree = slots > 0;
-          const onlineLabel = isDrawer
-            ? (onlineFree ? `🌐 Online License: ${slots}/2 ငှားနိုင်သည်` : '🌐 Online License: ပြည့်ပြီ (0/2)')
-            : (onlineFree ? `🌐 Online: ${slots}/2 ရမည်` : '🌐 Online: ပြည့်ပြီ');
-          const onlineStyle = onlineFree
-            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-            : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
-          html += `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${onlineStyle}">${onlineLabel}</span>`;
-        }
-      }
-
-      return html;
+    function getAvailabilityBadge(status) {
+      if (status === undefined || status === '') return '';
+      const free = isVgcAvailable(status);
+      const label = free ? 'ငှားနိုင်သည်' : (String(status) === '0' ? 'ငှားထားသည်' : String(status));
+      const style = free
+        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+        : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+      return `<span class="inline-block text-[10px] font-bold border px-2 py-0.5 rounded-md ${style}">${escapeHtml(label)}</span>`;
     }
 
     function renderShelf(list) {
@@ -473,11 +409,9 @@
             </div>
             <div class="p-3 flex-1 flex flex-col justify-between">
               <h2 class="font-bold text-xs sm:text-sm text-slate-100 line-clamp-2 leading-snug">${g.title}</h2>
-              <div>
-                <p class="text-xs font-bold text-emerald-400 mt-1.5">${g.price || '—'}</p>
-                <div class="flex flex-wrap gap-1 mt-1.5">
-                  ${getRentalBadges(g, false)}
-                </div>
+              <div class="flex items-center justify-between gap-1.5 mt-2">
+                <p class="text-xs font-bold text-emerald-400 truncate">${g.price || '—'}</p>
+                ${getAvailabilityBadge(g.availability)}
               </div>
             </div>
           </div>
@@ -525,7 +459,7 @@
               ${g.platform ? `<span class="text-[11px] font-semibold bg-red-500/15 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-md">${g.platform}</span>` : ''}
               ${g.releaseYear ? `<span class="text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-md">${g.releaseYear}</span>` : ''}
               ${g.score ? `<span class="text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">★ ${g.score}</span>` : ''}
-              ${getRentalBadges(g, true)}
+              ${getAvailabilityBadge(g.availability)}
             </div>
             <h2 class="text-base sm:text-lg font-extrabold text-white leading-snug">${g.title}</h2>
             <p class="text-sm font-bold text-emerald-400">${g.price || ''}</p>
@@ -692,9 +626,7 @@
       const filtered = state.games.filter(g => {
         const matchesSearch = g.title.toLowerCase().includes(q) ||
           (g.genre && g.genre.toLowerCase().includes(q));
-        const vgcFree = /^(1|true|yes|ငှားနိုင်သည်)$/i.test(String(g.availability || '').trim());
-        const onlineFree = (parseInt(g.onlineSlots, 10) || 0) > 0;
-        const matchesAvail = !showAvailableOnly || vgcFree || onlineFree;
+        const matchesAvail = !showAvailableOnly || isVgcAvailable(g.availability);
         return matchesSearch && matchesAvail;
       });
 
